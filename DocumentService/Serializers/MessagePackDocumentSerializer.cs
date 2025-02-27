@@ -21,7 +21,6 @@ namespace DocumentService.Serializers
         /// <returns>Base64 encoded MessagePack data</returns>
         public string Serialize(Document document)
         {
-            // Создаем промежуточный объект для сериализации
             var dto = new
             {
                 document.Id,
@@ -29,10 +28,7 @@ namespace DocumentService.Serializers
                 Data = document.Data.RootElement.GetRawText()
             };
 
-            // Сериализуем в MessagePack
             var bytes = MessagePackSerializer.Serialize(dto);
-            
-            // Возвращаем Base64 строку для HTTP
             return Convert.ToBase64String(bytes);
         }
 
@@ -43,13 +39,9 @@ namespace DocumentService.Serializers
         /// <returns>Document object</returns>
         public Document Deserialize(string data)
         {
-            // Декодируем Base64 в байты
             var bytes = Convert.FromBase64String(data);
-            
-            // Десериализуем из MessagePack
             var dto = MessagePackSerializer.Deserialize<dynamic>(bytes);
             
-            // Создаем документ
             return new Document
             {
                 Id = dto.Id,

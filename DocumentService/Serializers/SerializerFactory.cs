@@ -18,22 +18,24 @@ namespace DocumentService.Serializers
     /// </summary>
     public class SerializerFactory : ISerializerFactory
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly Dictionary<string, Type> _serializers;
+        private readonly JsonDocumentSerializer _jsonSerializer;
+        private readonly XmlDocumentSerializer _xmlSerializer;
+        private readonly MessagePackDocumentSerializer _messagePackSerializer;
 
         /// <summary>
         /// Creates a new serializer factory
         /// </summary>
-        /// <param name="serviceProvider">Service provider for resolving serializers</param>
-        public SerializerFactory(IServiceProvider serviceProvider)
+        /// <param name="jsonSerializer">JSON serializer</param>
+        /// <param name="xmlSerializer">XML serializer</param>
+        /// <param name="messagePackSerializer">MessagePack serializer</param>
+        public SerializerFactory(
+            JsonDocumentSerializer jsonSerializer,
+            XmlDocumentSerializer xmlSerializer,
+            MessagePackDocumentSerializer messagePackSerializer)
         {
-            _serviceProvider = serviceProvider;
-            _serializers = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
-            {
-                { "application/json", typeof(JsonDocumentSerializer) },
-                { "application/xml", typeof(XmlDocumentSerializer) },
-                { "application/x-msgpack", typeof(MessagePackDocumentSerializer) }
-            };
+            _jsonSerializer = jsonSerializer;
+            _xmlSerializer = xmlSerializer;
+            _messagePackSerializer = messagePackSerializer;
         }
 
         /// <summary>
@@ -44,18 +46,15 @@ namespace DocumentService.Serializers
         public IDocumentSerializer GetSerializer(string contentType)
         {
             if (string.IsNullOrEmpty(contentType))
-                return _serviceProvider.GetRequiredService<JsonDocumentSerializer>();
+                return _jsonSerializer;
 
-            // Remove parameters after semicolon if present
-            contentType = contentType.Split(';')[0].Trim();
+            if (contentType.Contains("application/xml"))
+                return _xmlSerializer;
 
-            if (_serializers.TryGetValue(contentType, out var serializerType))
-            {
-                return (IDocumentSerializer)_serviceProvider.GetRequiredService(serializerType);
-            }
+            if (contentType.Contains("application/x-msgpack"))
+                return _messagePackSerializer;
 
-            // Default to JSON serializer
-            return _serviceProvider.GetRequiredService<JsonDocumentSerializer>();
+            return _jsonSerializer;
         }
     }
 } 

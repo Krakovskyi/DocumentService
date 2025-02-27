@@ -109,7 +109,6 @@ namespace DocumentService.Serializers
         /// <returns>Task with XML string representation</returns>
         public async Task<string> SerializeAsync(Document document)
         {
-            // Run synchronous serialization on a background thread
             return await Task.Run(() => Serialize(document));
         }
 
@@ -120,7 +119,6 @@ namespace DocumentService.Serializers
         /// <returns>Task with Document object</returns>
         public async Task<Document> DeserializeAsync(string data)
         {
-            // Run synchronous deserialization on a background thread
             return await Task.Run(() => Deserialize(data));
         }
     }

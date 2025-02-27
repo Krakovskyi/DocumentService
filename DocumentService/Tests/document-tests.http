@@ -1,20 +1,6 @@
 ﻿# Document Service API Testing
-# Comprehensive test scenarios for Document Service API
-# 
-# Test Data Example:
-# {
-#   "id": "test-doc-1",
-#   "tags": ["test", "document"],
-#   "data": {
-#     "key1": "value1",
-#     "key2": 42
-#   }
-# }
 
-# ------------------------------------------------------------
 # Create a New Document
-# Demonstrates document creation with comprehensive test data
-# ------------------------------------------------------------
 POST http://localhost:5000/documents
 Content-Type: application/json; charset=UTF-8
 
@@ -27,10 +13,7 @@ Content-Type: application/json; charset=UTF-8
     }
 }
 
-# ------------------------------------------------------------
 # Retrieve Document in Different Formats
-# Demonstrates content negotiation and format flexibility
-# ------------------------------------------------------------
 
 # JSON
 GET http://localhost:5000/documents/some-unique-identifier1
@@ -44,10 +27,7 @@ Accept: application/xml
 GET http://localhost:5000/documents/some-unique-identifier1
 Accept: application/x-msgpack
 
-# ------------------------------------------------------------
 # Update Document
-# Shows partial and full document updates
-# ------------------------------------------------------------
 PUT http://localhost:5000/documents/some-unique-identifier1
 Content-Type: application/json
 
@@ -59,8 +39,5 @@ Content-Type: application/json
     }
 }
 
-# ------------------------------------------------------------
 # Delete Document
-# Demonstrates document removal operation
-# ------------------------------------------------------------
 DELETE http://localhost:5000/documents/some-unique-identifier1
