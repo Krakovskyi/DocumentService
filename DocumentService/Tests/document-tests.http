@@ -1,0 +1,79 @@
+﻿# Document Service API Testing
+# Comprehensive test scenarios for Document Service API
+# 
+# Test Data Example:
+# {
+#   "id": "test-doc-1",
+#   "tags": ["test", "document"],
+#   "data": {
+#     "key1": "value1",
+#     "key2": 42
+#   }
+# }
+
+# ------------------------------------------------------------
+# Create a New Document
+# Demonstrates document creation with comprehensive test data
+# ------------------------------------------------------------
+POST http://localhost:5094/api/document
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id": "test-doc-1",
+    "tags": ["test", "document", "example"],
+    "data": {
+        "title": "Test Document",
+        "version": 1.0,
+        "metadata": {
+            "created_at": "2024-01-15T10:30:00Z",
+            "author": "test_user"
+        },
+        "content": {
+            "key1": "value1",
+            "key2": 42,
+            "active": true
+        }
+    }
+}
+
+# ------------------------------------------------------------
+# Retrieve Document in Multiple Formats
+# Demonstrates content negotiation and format flexibility
+# ------------------------------------------------------------
+
+# Retrieve in default JSON format
+GET http://localhost:5094/api/document/test-doc-1
+Accept: application/json
+
+# Retrieve in XML format
+GET http://localhost:5094/api/document/test-doc-1
+Accept: application/xml
+
+# Retrieve in MessagePack format
+GET http://localhost:5094/api/document/test-doc-1
+Accept: application/x-msgpack
+
+# ------------------------------------------------------------
+# Update Existing Document
+# Shows partial and full document updates
+# ------------------------------------------------------------
+PUT http://localhost:5094/api/document/test-doc-1
+Content-Type: application/json
+
+{
+    "tags": ["updated", "modified", "test"],
+    "data": {
+        "title": "Updated Test Document",
+        "version": 1.1,
+        "metadata": {
+            "updated_at": "2024-01-16T15:45:00Z"
+        }
+    }
+}
+
+# ------------------------------------------------------------
+# Delete Document
+# Demonstrates document removal operation
+# ------------------------------------------------------------
+DELETE http://localhost:5094/api/document/test-doc-1
