@@ -21,26 +21,19 @@ namespace DocumentService.Serializers
         /// <returns>Base64 encoded MessagePack data</returns>
         public string Serialize(Document document)
         {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document), "Document cannot be null");
-
-            try 
+            // Создаем промежуточный объект для сериализации
+            var dto = new
             {
-                // Create serializable document for MessagePack
-                var serializableDocument = new SerializableDocument
-                {
-                    Id = document.Id,
-                    Tags = document.Tags,
-                    Data = document.Data.RootElement.GetRawText()
-                };
+                document.Id,
+                document.Tags,
+                Data = document.Data.RootElement.GetRawText()
+            };
 
-                // Serialize and convert to Base64 string
-                return Convert.ToBase64String(MessagePackSerializer.Serialize(serializableDocument));
-            }
-            catch (Exception ex)
-            {
-                throw new SerializationException($"MessagePack serialization error: {ex.Message}", ex);
-            }
+            // Сериализуем в MessagePack
+            var bytes = MessagePackSerializer.Serialize(dto);
+            
+            // Возвращаем Base64 строку для HTTP
+            return Convert.ToBase64String(bytes);
         }
 
         /// <summary>
@@ -50,27 +43,19 @@ namespace DocumentService.Serializers
         /// <returns>Document object</returns>
         public Document Deserialize(string data)
         {
-            if (string.IsNullOrWhiteSpace(data))
-                throw new ArgumentException("MessagePack data cannot be null or empty", nameof(data));
-
-            try 
+            // Декодируем Base64 в байты
+            var bytes = Convert.FromBase64String(data);
+            
+            // Десериализуем из MessagePack
+            var dto = MessagePackSerializer.Deserialize<dynamic>(bytes);
+            
+            // Создаем документ
+            return new Document
             {
-                // Convert from Base64 and deserialize
-                var bytes = Convert.FromBase64String(data);
-                var serializableDocument = MessagePackSerializer.Deserialize<SerializableDocument>(bytes);
-
-                // Convert to Document
-                return new Document
-                {
-                    Id = serializableDocument.Id,
-                    Tags = serializableDocument.Tags ?? new List<string>(),
-                    Data = JsonDocument.Parse(serializableDocument.Data ?? "{}")
-                };
-            }
-            catch (Exception ex)
-            {
-                throw new SerializationException($"MessagePack deserialization error: {ex.Message}", ex);
-            }
+                Id = dto.Id,
+                Tags = dto.Tags,
+                Data = JsonDocument.Parse(dto.Data)
+            };
         }
 
         /// <summary>

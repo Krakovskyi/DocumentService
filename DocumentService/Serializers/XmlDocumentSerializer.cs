@@ -47,14 +47,12 @@ namespace DocumentService.Serializers
         public string Serialize(Document document)
         {
             if (document == null)
-                throw new ArgumentNullException(nameof(document), "Document cannot be null");
+                throw new ArgumentNullException(nameof(document));
 
             try 
             {
-                // Create specialized XML serializer for wrapper class
                 var serializer = new XmlSerializer(typeof(DocumentXmlWrapper));
                 
-                // Transform Document to XML-compatible wrapper
                 var wrapper = new DocumentXmlWrapper
                 {
                     Id = document.Id,
@@ -63,17 +61,14 @@ namespace DocumentService.Serializers
                 };
 
                 using var stringWriter = new StringWriter();
-                // Configure XML writer with proper formatting
                 using var xmlWriter = XmlWriter.Create(stringWriter, new XmlWriterSettings { Indent = true });
                 
-                // Perform actual XML serialization
                 serializer.Serialize(xmlWriter, wrapper);
                 return stringWriter.ToString();
             }
             catch (Exception ex)
             {
-                // Wrap and rethrow serialization errors with context
-                throw new SerializationException($"XML serialization error: {ex.Message}", ex);
+                throw new Exception($"XML serialization error: {ex.Message}", ex);
             }
         }
 
@@ -85,18 +80,15 @@ namespace DocumentService.Serializers
         public Document Deserialize(string data)
         {
             if (string.IsNullOrWhiteSpace(data))
-                throw new ArgumentException("XML data cannot be null or empty", nameof(data));
+                throw new ArgumentException("XML data cannot be null or empty");
 
             try 
             {
-                // Create XML serializer for the wrapper class
                 var serializer = new XmlSerializer(typeof(DocumentXmlWrapper));
                 
-                // Deserialize XML to wrapper
                 using var stringReader = new StringReader(data);
                 var wrapper = (DocumentXmlWrapper)serializer.Deserialize(stringReader);
 
-                // Convert wrapper to Document
                 return new Document
                 {
                     Id = wrapper.Id,
@@ -106,8 +98,7 @@ namespace DocumentService.Serializers
             }
             catch (Exception ex)
             {
-                // Wrap deserialization errors in custom exception
-                throw new SerializationException($"XML deserialization error: {ex.Message}", ex);
+                throw new Exception($"XML deserialization error: {ex.Message}", ex);
             }
         }
 

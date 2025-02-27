@@ -33,9 +33,6 @@ namespace DocumentService.Models
         /// <returns>True, если документ корректен</returns>
         public bool IsValid()
         {
-            // Проверяем, что идентификатор не пустой
-            // Теги не null
-            // Данные не null
             return !string.IsNullOrWhiteSpace(Id) && 
                    Tags != null && 
                    Data != null;

@@ -15,60 +15,47 @@
 # Create a New Document
 # Demonstrates document creation with comprehensive test data
 # ------------------------------------------------------------
-POST http://localhost:5094/api/document
-Content-Type: application/json
-Accept: application/json
+POST http://localhost:5000/documents
+Content-Type: application/json; charset=UTF-8
 
 {
-    "id": "test-doc-1",
-    "tags": ["test", "document", "example"],
+    "id": "some-unique-identifier1",
+    "tags": ["important", ".net"],
     "data": {
-        "title": "Test Document",
-        "version": 1.0,
-        "metadata": {
-            "created_at": "2024-01-15T10:30:00Z",
-            "author": "test_user"
-        },
-        "content": {
-            "key1": "value1",
-            "key2": 42,
-            "active": true
-        }
+        "some": "data",
+        "optional": "fields"
     }
 }
 
 # ------------------------------------------------------------
-# Retrieve Document in Multiple Formats
+# Retrieve Document in Different Formats
 # Demonstrates content negotiation and format flexibility
 # ------------------------------------------------------------
 
-# Retrieve in default JSON format
-GET http://localhost:5094/api/document/test-doc-1
+# JSON
+GET http://localhost:5000/documents/some-unique-identifier1
 Accept: application/json
 
-# Retrieve in XML format
-GET http://localhost:5094/api/document/test-doc-1
+# XML
+GET http://localhost:5000/documents/some-unique-identifier1
 Accept: application/xml
 
-# Retrieve in MessagePack format
-GET http://localhost:5094/api/document/test-doc-1
+# MessagePack
+GET http://localhost:5000/documents/some-unique-identifier1
 Accept: application/x-msgpack
 
 # ------------------------------------------------------------
-# Update Existing Document
+# Update Document
 # Shows partial and full document updates
 # ------------------------------------------------------------
-PUT http://localhost:5094/api/document/test-doc-1
+PUT http://localhost:5000/documents/some-unique-identifier1
 Content-Type: application/json
 
 {
-    "tags": ["updated", "modified", "test"],
+    "tags": ["updated", "important"],
     "data": {
-        "title": "Updated Test Document",
-        "version": 1.1,
-        "metadata": {
-            "updated_at": "2024-01-16T15:45:00Z"
-        }
+        "some": "updated data",
+        "new_field": "value"
     }
 }
 
@@ -76,4 +63,4 @@ Content-Type: application/json
 # Delete Document
 # Demonstrates document removal operation
 # ------------------------------------------------------------
-DELETE http://localhost:5094/api/document/test-doc-1
+DELETE http://localhost:5000/documents/some-unique-identifier1

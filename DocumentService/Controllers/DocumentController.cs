@@ -12,7 +12,7 @@ namespace DocumentService.Controllers
     /// Controller for document operations
     /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("documents")]
     public class DocumentController : ControllerBase
     {
         private readonly DocumentServiceManager _documentService;
@@ -61,13 +61,11 @@ namespace DocumentService.Controllers
             if (document == null)
                 return NotFound();
 
-            // Determine serializer based on Accept header
+            // Определяем сериализатор на основе Accept заголовка
             var acceptHeader = Request.Headers.Accept.FirstOrDefault();
             var serializer = _serializerFactory.GetSerializer(acceptHeader);
-
-            // Serialize document to requested format
-            var serializedDocument = serializer.Serialize(document);
             
+            var serializedDocument = serializer.Serialize(document);
             return Content(serializedDocument, serializer.ContentType);
         }
 

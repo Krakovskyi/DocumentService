@@ -1,6 +1,5 @@
 using DocumentService.Models;
 using DocumentService.Repositories;
-using DocumentService.Serializers;
 using System.Text.Json;
 
 namespace DocumentService.Services
@@ -11,19 +10,14 @@ namespace DocumentService.Services
     public class DocumentServiceManager
     {
         private readonly IDocumentRepository _repository;
-        private readonly IDocumentSerializer _jsonSerializer;
 
         /// <summary>
         /// Constructor with dependency injection
         /// </summary>
         /// <param name="repository">Document repository</param>
-        /// <param name="jsonSerializer">JSON serializer for documents</param>
-        public DocumentServiceManager(
-            IDocumentRepository repository, 
-            JsonDocumentSerializer jsonSerializer)
+        public DocumentServiceManager(IDocumentRepository repository)
         {
             _repository = repository;
-            _jsonSerializer = jsonSerializer;
         }
 
         /// <summary>
@@ -35,7 +29,6 @@ namespace DocumentService.Services
         {
             var document = new Document
             {
-                // Generate new GUID if ID not provided
                 Id = documentDto.Id ?? Guid.NewGuid().ToString(),
                 Tags = documentDto.Tags ?? new List<string>(),
                 Data = JsonDocument.Parse(System.Text.Json.JsonSerializer.Serialize(documentDto.Data))
